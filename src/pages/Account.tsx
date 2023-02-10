@@ -14,17 +14,18 @@ import {
 } from '@ionic/react';
 import { useEffect, useState } from 'react';
 import { Avatar } from '../components/Avatar';
-import { supabase } from '../supabaseClient';
+import { db } from '../supabaseClient';
 
 export function AccountPage() {
   const [showLoading, hideLoading] = useIonLoading();
   const [showToast] = useIonToast();
-  const [session] = useState(() => supabase.auth.session());
+  const [session] = useState(() => db.supabase.auth.session());
   const router = useIonRouter();
   const [profile, setProfile] = useState({
     username: '',
     website: '',
     avatar_url: '',
+    phone:''
   });
   useEffect(() => {
     getProfile();
@@ -33,8 +34,8 @@ export function AccountPage() {
     console.log('get');
     await showLoading();
     try {
-      const user = supabase.auth.user();
-      let { data, error, status } = await supabase
+      const user = db.supabase.auth.user();
+      let { data, error, status } = await db.supabase
         .from('profiles')
         .select(`username, website, avatar_url`)
         .eq('id', user!.id)
@@ -49,6 +50,7 @@ export function AccountPage() {
           username: data.username,
           website: data.website,
           avatar_url: data.avatar_url,
+          phone:data.phone
         });
       }
     } catch (error: any) {
@@ -58,7 +60,7 @@ export function AccountPage() {
     }
   };
   const signOut = async () => {
-    await supabase.auth.signOut();
+    await db.supabase.auth.signOut();
     router.push('/', 'forward', 'replace');
   }
   const updateProfile = async (e?: any, avatar_url: string = '') => {
@@ -68,7 +70,7 @@ export function AccountPage() {
     await showLoading();
 
     try {
-      const user = supabase.auth.user();
+      const user = db.supabase.auth.user();
 
       const updates = {
         id: user!.id,
@@ -77,7 +79,7 @@ export function AccountPage() {
         updated_at: new Date(),
       };
 
-      let { error } = await supabase.from('profiles').upsert(updates, {
+      let { error } = await db.supabase.from('profiles').upsert(updates, {
         returning: 'minimal', // Don't return the value after inserting
       });
 
@@ -119,8 +121,19 @@ export function AccountPage() {
               }
             ></IonInput>
           </IonItem>
-
           <IonItem>
+            <IonLabel position="stacked">phone</IonLabel>
+            <IonInput
+            disabled
+              type="tel"
+              name="phone"
+              value={profile.phone}
+              // onIonChange={(e) =>
+              //   setProfile({ ...profile, website: e.detail.value ?? '' })
+              // }
+            ></IonInput>
+          </IonItem>
+          {/* <IonItem>
             <IonLabel position="stacked">Website</IonLabel>
             <IonInput
               type="url"
@@ -130,7 +143,7 @@ export function AccountPage() {
                 setProfile({ ...profile, website: e.detail.value ?? '' })
               }
             ></IonInput>
-          </IonItem>
+          </IonItem> */}
           <div className="ion-text-center">
             <IonButton fill="clear" type="submit">
               Update Profile

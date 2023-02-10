@@ -2,7 +2,7 @@ import { IonIcon } from '@ionic/react';
 import { person } from 'ionicons/icons';
 import { Camera, CameraResultType } from '@capacitor/camera';
 import { useEffect, useState } from 'react';
-import { supabase } from '../supabaseClient';
+import { db } from '../supabaseClient';
 import './Avatar.css'
 export function Avatar({
   url,
@@ -34,7 +34,7 @@ export function Avatar({
       const fileName = `${Math.random()}-${new Date().getTime()}.${
         photo.format
       }`;
-      let { error: uploadError } = await supabase.storage
+      let { error: uploadError } = await db.supabase.storage
         .from('avatars')
         .upload(fileName, file);
       if (uploadError) {
@@ -48,7 +48,7 @@ export function Avatar({
 
   const downloadImage = async (path: string) => {
     try {
-      const { data, error } = await supabase.storage
+      const { data, error } = await db.supabase.storage
         .from('avatars')
         .download(path);
       if (error) {

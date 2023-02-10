@@ -1,7 +1,7 @@
 import { Redirect, Route } from 'react-router-dom';
 import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { supabase } from './supabaseClient';
+import { db } from './supabaseClient';
 
 import '@ionic/react/css/ionic.bundle.css';
 
@@ -17,8 +17,8 @@ setupIonicReact();
 const App: React.FC = () => {
   const [session, setSession] = useState<Session | null>(null);
   useEffect(() => {
-    setSession(supabase.auth.session());
-    supabase.auth.onAuthStateChange((_event, session) => {
+    setSession(db.supabase.auth.session());
+    db.supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
     });
   }, [session]);

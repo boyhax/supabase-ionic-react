@@ -68,7 +68,8 @@
     ]
   },
   "devDependencies": {
-    "@capacitor/cli": "3.4.3"
+    "@capacitor/cli": "3.4.3",
+    "supabase": "^1.37.1"
   },
   "description": "An Ionic project"
 }

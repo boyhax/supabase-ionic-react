@@ -13,7 +13,7 @@ import {
   useIonToast,
   useIonLoading,
 } from '@ionic/react';
-import { supabase } from '../supabaseClient';
+import { db } from '../supabaseClient';
 
 export function LoginPage() {
   const [email, setEmail] = useState('');
@@ -25,7 +25,7 @@ export function LoginPage() {
     e.preventDefault();
     await showLoading();
     try {
-      await supabase.auth.signIn({ email });
+      await db.supabase.auth.signIn({ email });
       await showToast({ message: 'Check your email for the login link!' });
     } catch (e: any) {
       await showToast({ message: e.error_description || e.message , duration: 5000});
